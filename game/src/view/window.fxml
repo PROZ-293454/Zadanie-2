@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #546e7a;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+   <children>
+      <VBox fillWidth="false" maxHeight="1.7976931348623157E308" minHeight="-Infinity">
+         <children>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TY: " />
+                  <Text fx:id="myCounterText" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PRZECIWNIK: " />
+                  <Text fx:id="opponentCounterText" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+               </children>
+            </HBox>
+            <GridPane fx:id="board" VBox.vgrow="NEVER">
+               <columnConstraints>
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitHeight="449.0" fitWidth="507.0" pickOnBounds="true" GridPane.columnIndex="10" GridPane.rowIndex="5">
+                     <image>
+                        <Image url="@board.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

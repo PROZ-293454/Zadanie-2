@@ -1,0 +1,54 @@
+package view;
+
+import static model.Ball.Color.BLACK;
+import static model.Ball.Color.WHITE;
+
+import controller.Controller;
+import javafx.scene.layout.GridPane;
+import model.Ball;
+import model.ListOfBalls;
+
+public class Board {
+
+	public static void setBoard(GridPane board, ListOfBalls myBallsList, ListOfBalls opponentBallsList) {
+		// adding my balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(BLACK, i, 1);
+			myBallsList.add(ball);
+			board.add(ball, i, 1);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(BLACK, i, 2);
+			myBallsList.add(ball);
+			board.add(ball, i, 2);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(BLACK, i, 3);
+			myBallsList.add(ball);
+			board.add(ball, i, 3);
+		}
+
+		// adding opponent's balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(WHITE, i, 9);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 9);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(WHITE, i, 8);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 8);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(WHITE, i, 7);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 7);
+		}
+
+		// adding listeners to my balls
+		for (Ball ball : myBallsList) {
+			ball.setOnMouseClicked(e -> Controller.clickBall(ball));
+		}
+	}
+
+}

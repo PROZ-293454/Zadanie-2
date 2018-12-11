@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+/**
+ * @author asus
+ *
+ */
+module view {
+	requires transitive javafx.controls;
+	requires jdk.jshell;
+	requires javafx.graphics;
+	requires javafx.fxml;
+	requires javafx.base;
+	requires java.desktop;
+	opens controller to javafx.fxml;
+	exports controller;
+}

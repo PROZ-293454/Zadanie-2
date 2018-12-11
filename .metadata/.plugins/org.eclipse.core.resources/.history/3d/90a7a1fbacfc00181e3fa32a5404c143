@@ -1,0 +1,150 @@
+package controller;
+
+import static model.State.*;
+
+import java.util.List;
+
+import javax.jms.JMSConsumer;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+import jms.Consumer;
+import jms.Producer;
+import model.Ball;
+import model.ListOfBalls;
+import model.Move;
+import model.State;
+
+public class Messaging {
+
+	public static Producer producer;
+	public static Consumer consumer;
+
+	static {
+		try {
+			producer = new Producer("localhost:4848/jms", "ATJ2queue"); // Second player: ATJQueue
+			consumer = new Consumer("localhost:4848/jms", "ATJQueue"); // Second player: ATJ2queue
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+
+	/*private void setConsumerListener(State state) {
+		consumer.getJmsConsumer().setMessageListener(message -> {
+			try {
+				readFromMsgString(((TextMessage) message).getText());
+				System.out.println(((TextMessage) message).getText());
+				state = CHOOSE_FIRST_BALL;
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+		});
+	}*/
+	
+	static void sendQueueMessage( String message) {
+		producer.sendQueueMessage(message);
+	}
+
+	static String makeMsgString(List<Ball> chosenBalls, List<Ball> opponentToMoveBalls, Move move) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(move.id());
+		builder.append(" ");
+		builder.append(chosenBalls.size());
+		builder.append(" ");
+		for (Ball tmpBall : chosenBalls) {
+			builder.append(tmpBall.getPosX() + " " + tmpBall.getPosY() + " ");
+		}
+
+		builder.append(opponentToMoveBalls.size());
+		builder.append(" ");
+		for (Ball tmpBall : opponentToMoveBalls) {
+			builder.append(tmpBall.getPosX() + " " + tmpBall.getPosY() + " ");
+		}
+
+		return builder.toString();
+
+	}
+	
+	static ListOfBalls readOpponentBallsFromMsgString(String message, ListOfBalls opponentBallsList) {
+		String[] data = message.split(" ");
+		System.out.println(message);
+		Move move = Move.getFromID(Integer.parseInt(data[0]));
+		ListOfBalls opponentToMoveBalls = new ListOfBalls();
+		//ListOfBalls chosenBalls = new ListOfBalls();
+		int opponentBallsLength = Integer.parseInt(data[1]);
+		for (int i = 2; i < 2 * opponentBallsLength + 2; i += 2) {
+			int x = Integer.parseInt(data[i]);
+			int y = Integer.parseInt(data[i + 1]);
+			Ball tmpBall = opponentBallsList.getBall(x, y);
+			System.out.println("x" + x + "y" + y);
+			opponentToMoveBalls.add(tmpBall);
+		}
+		/*int myBallsLength = Integer.parseInt(data[2 * opponentBallsLength + 2]);
+		for (int i = 2 * opponentBallsLength + 3; i < 2 * myBallsLength + 2 * opponentBallsLength + 3; i += 2) {
+			int x = Integer.parseInt(data[i]);
+			int y = Integer.parseInt(data[i + 1]);
+			Ball tmpBall = myBallsList.getBall(x, y);
+			System.out.println("x2" + x + "y2" + y);
+			chosenBalls.add(tmpBall);
+		}*/
+		/*
+		 * for (Ball tmpBall : myBoard.moveBalls(move, chosenBalls))
+		 * tmpBall.setOnMouseClicked(e -> clickBall(tmpBall));
+		 * 
+		 * myBoard.moveBalls(move, opponentToMoveBalls);
+		 */
+
+		//moveBalls(move, null);
+		message = message.substring(2 * opponentBallsLength + 1);
+		return opponentToMoveBalls;
+		//chosenBalls.removeAll(chosenBalls);
+		//opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+	}
+
+
+
+	static ListOfBalls readChosenBallsFromMsgString(String message, ListOfBalls myBallsList) {
+		String[] data = message.split(" ");
+		System.out.println(message);
+		Move move = Move.getFromID(Integer.parseInt(data[0]));
+		//ListOfBalls opponentToMoveBalls = new ListOfBalls();
+		ListOfBalls chosenBalls = new ListOfBalls();
+		//int opponentBallsLength = Integer.parseInt(data[1]);
+		/*for (int i = 2; i < 2 * opponentBallsLength + 2; i += 2) {
+			int x = Integer.parseInt(data[i]);
+			int y = Integer.parseInt(data[i + 1]);
+			Ball tmpBall = opponentBallsList.getBall(x, y);
+			System.out.println("x" + x + "y" + y);
+			opponentToMoveBalls.add(tmpBall);
+		}*/
+		int myBallsLength = Integer.parseInt(data[0]);
+		for (int i = 1; i < 2 * myBallsLength + 1; i += 2) {
+			int x = Integer.parseInt(data[i]);
+			int y = Integer.parseInt(data[i + 1]);
+			Ball tmpBall = myBallsList.getBall(x, y);
+			System.out.println("x2" + x + "y2" + y);
+			chosenBalls.add(tmpBall);
+		}
+		/*
+		 * for (Ball tmpBall : myBoard.moveBalls(move, chosenBalls))
+		 * tmpBall.setOnMouseClicked(e -> clickBall(tmpBall));
+		 * 
+		 * myBoard.moveBalls(move, opponentToMoveBalls);
+		 */
+
+		//moveBalls(move, null);
+		return chosenBalls;
+		//chosenBalls.removeAll(chosenBalls);
+		//opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+	}
+
+	static JMSConsumer getJmsConsumer() {
+		// TODO Auto-generated method stub
+		return consumer.getJmsConsumer();
+	}
+
+}

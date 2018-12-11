@@ -1,0 +1,332 @@
+package controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import jms.Consumer;
+import jms.Producer;
+import model.Ball;
+import model.Ball.Color;
+import model.ListOfBalls;
+import view.Main;
+
+import static controller.Controller.Move.*;
+import static controller.Controller.Orientation.*;
+import static controller.Controller.State.*;
+import static model.Ball.Color.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+public class Controller {
+
+	@FXML
+	private GridPane board;
+
+	public static Producer producer;
+	public static Consumer consumer;
+	static {
+		try {
+			producer = new Producer("localhost:4848/jms", "ATJQueue");
+			consumer = new Consumer("localhost:4848/jms", "ATJQueue");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private static ListOfBalls myBallsList = new ListOfBalls();
+	private static ListOfBalls opponentBallsList = new ListOfBalls();
+	private static List<Ball> opponentToMoveBalls = new ArrayList<>();
+	Image arrow = new Image(Main.class.getResourceAsStream("baseline_arrow_forward_black_36dp.png"));
+	// private static Ball firstBall;
+	// private static Ball lastBall;
+
+	public enum State {
+		CHOOSE_FIRST_BALL, CHOOSE_SECOND_BALL, CHOOSE_MOVE
+	};
+
+	public enum Orientation {
+		DIAGONAL_NE_WS(NE, SW), DIAGONAL_NW_SE(NW, SE), HORIZONTAL(E, W);
+		private Move[] possibleMoves;
+
+		Orientation(Move move1, Move move2) {
+			this.possibleMoves = new Move[2];
+			this.possibleMoves[0] = move1;
+			this.possibleMoves[1] = move2;
+		}
+
+		static Orientation getOrientation(int dx, int dy) {
+			if (dy == 0)
+				return HORIZONTAL;
+			else if (dx == dy)
+				return DIAGONAL_NW_SE;
+			else
+				return DIAGONAL_NE_WS;
+		}
+
+		Move[] possibleMoves() {
+			return this.possibleMoves;
+		}
+	};
+
+	public enum Move {
+		E(0, 2, 0, 0), SE(1, 1, 1, 60), SW(2, -1, 1, 120), W(3, -2, 0, 180), NW(4, -1, -1, 240), NE(5, 1, -1, 300);
+		private int id, dx, dy, angle;
+
+		Move(int id, int dx, int dy, int angle) {
+			this.id = id;
+			this.dx = dx;
+			this.dy = dy;
+			this.angle = angle;
+		}
+
+		int id() {
+			return id;
+		}
+
+		int dx() {
+			return dx;
+		}
+
+		int dy() {
+			return dy;
+		}
+
+		int angle() {
+			return angle;
+		}
+	};
+
+	Move move;
+
+	private static State state;
+	private static List<Ball> chosenBalls = new ArrayList<>();
+	private static List<ImageView> moveButtons = new ArrayList<>();
+	private static Orientation orientation;
+	private static int dx;
+	private static int dy;
+	private static String message;
+
+	@FXML
+	void startGame() {
+		/*consumer.getJmsConsumer().setMessageListener(message -> {
+			try {
+				System.out.printf("Odebrano wiadomoœæ:'%s'%n", ((TextMessage) message).getText());
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+		});*/
+		state = CHOOSE_FIRST_BALL;
+		addBalls();
+	}
+
+	void clickBlackBall(Ball ball) {
+
+		// System.out.println(state);
+		// producer.sendQueueMessage(state.toString());
+		if (state == CHOOSE_FIRST_BALL) {
+			try {
+				// consumer.receiveQueueMessageAsync();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (ball.getImage().equals(Ball.blackBallImg))
+				ball.setImage(Ball.whiteBallImg);
+			else
+				ball.setImage(Ball.blackBallImg);
+
+			chosenBalls.add(ball);
+			state = CHOOSE_SECOND_BALL;
+		}
+
+		else if (state == CHOOSE_SECOND_BALL) {
+
+			int x1 = chosenBalls.get(0).getPosX();
+			int x2 = ball.getPosX();
+			int y1 = chosenBalls.get(0).getPosY();
+			int y2 = ball.getPosY();
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+
+			chooseBalls(dx, dy, x1, y1);
+
+			int[] k = { 0, 0, 0, 0, 0, 0 };
+			Move[] tableOfMoves = { E, SE, SW, W, NW, NE };
+
+			int numberOfBalls = chosenBalls.size();
+			// System.out.println(opponentBallsList.getBall(10, 9).getColor());
+			for (Ball tmpBall : chosenBalls) {
+				for (Move move : tableOfMoves) {
+					if (myBallsList.getBall(tmpBall.getPosX() + move.dx(), tmpBall.getPosY() + move.dy()) == null
+							&& opponentBallsList.getBall(tmpBall.getPosX() + move.dx(),
+									tmpBall.getPosY() + move.dy()) == null)
+						k[move.id]++;
+
+				}
+			}
+
+			// System.out.println("" + k[0] + k[1] + k[2] + k[3] + k[4] + k[5]);
+
+			for (Move move : tableOfMoves) {
+				if (k[move.id()] == numberOfBalls) {
+					setOneMoveButton(move, x2, y2);
+					// System.out.println("WTF");
+				}
+
+			}
+			Move[] possibleMoves = orientation.possibleMoves();
+			for (Move tmpMove : possibleMoves) {
+				addMoveAlongLine(x2, y2, tmpMove);
+			}
+		}
+
+	}
+
+	private void moveChoiceClicked(Move move) {
+		moveBalls(move, chosenBalls);
+		chosenBalls.removeAll(chosenBalls);
+		// System.out.println(opponentToMoveBalls.size());
+		moveBalls(move, opponentToMoveBalls);
+		opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+		producer.sendQueueMessage("Wykonano ruch");
+		state = CHOOSE_FIRST_BALL;
+	}
+
+	private void addBalls() {
+		// adding my balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(BLACK, i, 1);
+			myBallsList.add(ball);
+			board.add(ball, i, 1);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(BLACK, i, 2);
+			myBallsList.add(ball);
+			board.add(ball, i, 2);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(BLACK, i, 3);
+			myBallsList.add(ball);
+			board.add(ball, i, 3);
+		}
+
+		// adding opponent's balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(WHITE, i, 9);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 9);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(WHITE, i, 8);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 8);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(WHITE, i, 7);
+			opponentBallsList.add(ball);
+			board.add(ball, i, 7);
+		}
+
+		// adding listeners to my balls
+		for (Ball ball : myBallsList) {
+			ball.setOnMouseClicked(e -> clickBlackBall(ball));
+		}
+
+	}
+
+	private List<Ball> getList(Color color) {
+		if (color == BLACK)
+			return myBallsList;
+		else
+			return opponentBallsList;
+	}
+
+	private void moveBalls(Move move, List<Ball> chosenBalls) {
+		int dx = move.dx();
+		int dy = move.dy();
+		// System.out.println("chosenBallslength: "+chosenBalls.size());
+		if (chosenBalls.size() > 0) {
+		}
+		for (Ball tmpBall : chosenBalls) {
+			int x = tmpBall.getPosX();
+			int y = tmpBall.getPosY();
+			Color color = tmpBall.getColor();
+			getList(color).remove(tmpBall);
+			board.getChildren().removeAll(moveButtons);
+			moveButtons.removeAll(moveButtons);
+			board.getChildren().remove(tmpBall);
+			Ball newBall = new Ball(color, x + dx, y + dy);
+			newBall.setOnMouseClicked(e -> clickBlackBall(newBall));
+			board.add(newBall, x + dx, y + dy);
+			getList(color).add(newBall);
+		}
+	}
+
+	private void setOneMoveButton(Move move, int x2, int y2) {
+		ImageView btn = new ImageView(arrow);
+		btn.setRotate(move.angle());
+		moveButtons.add(btn);
+		btn.setOnMouseClicked(e -> moveChoiceClicked(move));
+		board.add(btn, x2 + move.dx(), y2 + move.dy(), 1, 1);
+	}
+
+	private void addMoveAlongLine(int x2, int y2, Move move) {
+		int dx = move.dx();
+		int dy = move.dy();
+		for (int i = 1; i <= chosenBalls.size(); i++) {
+			Ball tmpBall = myBallsList.getBall(x2 + i * dx, y2 + i * dy);
+			if (tmpBall == null) {
+				// System.out.println("s1");
+				Ball tmpOpponentBall = opponentBallsList.getBall(x2 + i * dx, y2 + i * dy);
+				if (tmpOpponentBall == null) {
+					// System.out.println("s2");
+					ImageView btn = new ImageView(arrow);
+					btn.setRotate(move.angle());
+					btn.setOnMouseClicked(e -> moveChoiceClicked(move));
+					moveButtons.add(btn);
+					board.add(btn, x2 + i * dx, y2 + i * dy);
+					break;
+				} else {
+					// System.out.println("s3");
+					opponentToMoveBalls.add(tmpOpponentBall);
+					// System.out.print
+					if (i == chosenBalls.size())
+						opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+				}
+			} else {
+				// System.out.println("s4");
+				opponentToMoveBalls.removeAll(opponentToMoveBalls);
+				break;
+			}
+		}
+		// opponentToMoveBalls.removeAll(opponentToMoveBalls);
+	}
+
+	private void chooseBalls(int dx, int dy, int x1, int y1) {
+		// System.out.println(x1);
+		for (int i = 1;; i += 1) {
+			// System.out.println(x1+i*(int)Math.signum(dx));
+			// System.out.println(y1+i*(int)Math.signum(dy));
+			Ball tmpBall = myBallsList.getBall(x1 + i * (int) Math.signum(dx), y1 + i * (int) Math.signum(dy));
+			if (tmpBall != null) {
+				tmpBall.setImage(Ball.whiteBallImg);
+				chosenBalls.add(tmpBall);
+			}
+			// System.out.println(Math.abs(dx) + Math.abs(dy));
+			if (i == Math.abs(dx))
+				break;
+			if (i > 10)
+				break;
+		}
+		orientation = Orientation.getOrientation(dx, dy);
+		state = CHOOSE_MOVE;
+	}
+
+}
