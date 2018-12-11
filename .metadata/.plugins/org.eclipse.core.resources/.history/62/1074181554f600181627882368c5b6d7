@@ -1,0 +1,11 @@
+package view;
+
+import javafx.scene.layout.GridPane;
+
+public class Board extends GridPane {
+	
+	public Board() {
+		super();
+		this.add
+	}
+}

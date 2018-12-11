@@ -1,0 +1,154 @@
+package view;
+
+import static model.Ball.Color.*;
+import controller.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import controller.Move;
+import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import model.Ball;
+import model.ListOfBalls;
+import model.Ball.Color;
+
+public class Board {
+
+	private ListOfBalls myBallsList;
+	private ListOfBalls opponentBallsList;
+	private GridPane board;
+	private List<ImageView> moveButtons;
+	Image arrow = new Image(Main.class.getResourceAsStream("move.png"));
+
+	public Board(GridPane xboard) {
+		this.board = xboard;
+		this.myBallsList = new ListOfBalls();
+		this.opponentBallsList = new ListOfBalls();
+		this.moveButtons = new ArrayList<>();
+	}
+
+	private List<Ball> getList(Color color) {
+		if (color == Controller.MY_COLOR)
+			return myBallsList;
+		else
+			return opponentBallsList;
+	}
+
+	private boolean isPushed(int x, int y) {
+		if (y == 0 || y == 10)
+			return true;
+		else if (x + y <= 5)
+			return true;
+		else if (x + y >= 24)
+			return true;
+		else if (x - y >= 14)
+			return true;
+		else if (x - y <= -5)
+			return true;
+		else
+			return false;
+	}
+
+	public List<Ball> moveBalls(Move move, List<Ball> chosenBalls) {
+		int dx = move.dx();
+		int dy = move.dy();
+		List<Ball> movedBalls = new ArrayList<>();
+		System.out.println("chosenBallslength: " + chosenBalls.size());
+
+		for (Ball tmpBall : chosenBalls) {
+			if (tmpBall == null)
+				continue;
+			int x = tmpBall.getPosX();
+			int y = tmpBall.getPosY();
+			int newX = x + dx;
+			int newY = y + dy;
+			Color color = tmpBall.getColor();
+			getList(color).remove(tmpBall);
+			Platform.runLater(() -> {
+				board.getChildren().remove(tmpBall);
+			});
+			if (!isPushed(newX, newY)) {
+				Ball newBall = new Ball(color, x + dx, y + dy);
+				movedBalls.add(newBall);
+				Platform.runLater(() -> {
+					board.add(newBall, x + dx, y + dy);
+				});
+				getList(color).add(newBall);
+			}
+		}
+		if (moveButtons.size() > 0)
+			board.getChildren().removeAll(moveButtons);
+		moveButtons.removeAll(moveButtons);
+		return movedBalls;
+	}
+
+	public ListOfBalls getMyBallsList() {
+		return myBallsList;
+	}
+
+	public ListOfBalls getOpponentBallsList() {
+		return opponentBallsList;
+	}
+
+	public ImageView setOneMoveButton(Move move, int x, int y) {
+		ImageView btn = new ImageView(arrow);
+		btn.setRotate(move.angle());
+		moveButtons.add(btn);
+		// btn.setOnMouseClicked(e -> moveChoiceClicked(move));
+		board.add(btn, x + move.dx(), y + move.dy());
+		return btn;
+	}
+
+	public List<Ball> setBoard(Color color) {
+		ListOfBalls ballsList1 = new ListOfBalls();
+		ListOfBalls ballsList2 = new ListOfBalls();
+		if (color == BLACK) {
+			myBallsList = ballsList1;
+			opponentBallsList = ballsList2;
+		} else {
+			myBallsList = ballsList2;
+			opponentBallsList = ballsList1;
+		}
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(BLACK, i, 0);
+			ballsList1.add(ball);
+			board.add(ball, i, 1);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(BLACK, i, 1);
+			ballsList1.add(ball);
+			board.add(ball, i, 2);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(BLACK, i, 2);
+			ballsList1.add(ball);
+			board.add(ball, i, 3);
+		}
+
+		// adding opponent's balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(WHITE, i, 8);
+			ballsList2.add(ball);
+			board.add(ball, i, 9);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(WHITE, i, 7);
+			ballsList2.add(ball);
+			board.add(ball, i, 8);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(WHITE, i, 6);
+			ballsList2.add(ball);
+			board.add(ball, i, 7);
+		}
+
+		return myBallsList;
+
+	}
+
+}

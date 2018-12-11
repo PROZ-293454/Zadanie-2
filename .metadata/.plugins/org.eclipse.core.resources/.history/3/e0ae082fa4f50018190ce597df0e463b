@@ -1,0 +1,44 @@
+package svg;
+
+import java.io.IOException;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+
+ 
+
+/**
+
+*
+* @author ROBT
+*/
+public class TestButton extends AnchorPane {
+
+@FXML
+private AnchorPane myTestButton;
+
+public TestButton() {    FXMLLoader fxmlLoader = new FXMLLoader(
+
+   getClass().getResource("/game/src/svg/TestButton.fxml"));
+
+
+
+ 
+
+ 
+
+   fxmlLoader.setRoot(this);
+   fxmlLoader.setController(this);
+
+   try {
+      fxmlLoader.load();
+   } catch (IOException exception) {
+      throw new RuntimeException(exception);
+   }
+ }
+
+}

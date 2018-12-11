@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="moveBalls" key="selection"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="moveballs"/>
+			<item value="moveba"/>
+			<item value="moveball"/>
+			<item value="chosenBallslength"/>
+			<item value="length"/>
+			<item value="chooseBalls"/>
+			<item value="chooseball"/>
+			<item value="choose"/>
+			<item value="chooseSecond"/>
+			<item value="movealong"/>
+			<item value="movebutt"/>
+			<item value="endgame"/>
+			<item value="state = CHOOSE_FIRST_BALL"/>
+			<item value="makemovestable"/>
+			<item value="chosenBalls.size()"/>
+		</list>
+		<list key="replacehistory">
+			<item value="myBoardModel.startGame()"/>
+			<item value="myBoardModel.numberOfChosenBalls()"/>
+			<item value="myBoardModel.getState()"/>
+			<item value="user&apos;s"/>
+			<item value="opponentBallsList"/>
+			<item value="myBallsList"/>
+			<item value=")"/>
+			<item value=""/>
+			<item value="movedBalls"/>
+			<item value="clickBall"/>
+			<item value="clickMyBall"/>
+			<item value="board"/>
+			<item value="Ball"/>
+			<item value="ListOfBalls"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="336" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="454" key="DIALOG_HEIGHT"/>
+		<item value="1558" key="DIALOG_X_ORIGIN"/>
+		<item value="253" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

@@ -1,0 +1,58 @@
+package jms;
+
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSContext;
+import javax.jms.JMSException;
+import javax.jms.JMSProducer;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+
+import javax.jms.Session;
+
+import java.io.Serializable;
+
+import javax.jms.Connection;
+
+import model.ListOfBalls;
+
+public class Producer {
+	private JMSContext jmsContext;
+	private JMSProducer jmsProducer;
+	private Queue queue;
+	private Connection connection;
+
+	public Producer(String url, String queueName) throws JMSException {
+		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+// [hostName][:portNumber][/serviceName]
+// 7676 numer portu, na którym JMS Service nas³uchuje po³¹czeñ
+// "localhost:7676/jms"
+		jmsContext = connectionFactory.createContext();
+		((com.sun.messaging.ConnectionFactory) connectionFactory)
+				.setProperty(com.sun.messaging.ConnectionConfiguration.imqAddressList, url);
+		jmsProducer = jmsContext.createProducer();
+		queue = new com.sun.messaging.Queue(queueName); // "ATJQueue"
+		connection = connectionFactory.createConnection();
+	}
+
+	public void sendQueueMessage(ListOfBalls myBalls) {
+		try {
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		MessageProducer producer = session.createProducer(queue);
+
+		ObjectMessage msg = session.createObjectMessage();
+		msg.setObject(myBalls);
+		producer.send(msg);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		// jmsProducer.send(queue, msg);
+		// System.out.println(msg);
+	}
+
+	protected void finalize() {
+		if (jmsContext != null)
+			jmsContext.close();
+	}
+}

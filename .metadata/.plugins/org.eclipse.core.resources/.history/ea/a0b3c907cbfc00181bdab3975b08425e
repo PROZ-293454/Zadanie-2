@@ -1,0 +1,29 @@
+package view;
+
+import static model.State.GAME_ENDED;
+
+import java.util.Optional;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+
+public class AlertEnd {
+	/**
+	 * Method creates alert, shows it and set listener for "OK" button.
+	 * 
+	 * @param text - text shown in the alert
+	 * @return 
+	 * @return 
+	 */
+	private void makeAlert(String text) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Koniec gry!");
+			alert.setHeaderText(text);
+			alert.setContentText("Zakoñcz grê");
+			Optional<ButtonType> result = alert.showAndWait();
+		});
+	}
+}

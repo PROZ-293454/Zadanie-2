@@ -1,0 +1,17 @@
+package view;
+
+import javafx.scene.control.Button;
+
+public class Board extends Button {
+
+	int size = 10;
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+}

@@ -1,0 +1,325 @@
+package controller;
+
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.Ball;
+import model.Messaging;
+import model.Move;
+import model.Orientation;
+import model.State;
+import model.Ball.Color;
+import view.Board;
+
+import static model.Ball.Color.*;
+import static model.Move.*;
+import static model.Orientation.*;
+import static model.State.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+public class Controller {
+
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+
+	public static final Color MY_COLOR = BLACK; // second player: WHITE
+	public static final Move[] tableOfMoves = { E, SE, SW, W, NW, NE };
+
+	private int myCounter;
+	private int opponentCounter;
+	private Board myBoard;
+	private State state;
+
+	private List<Ball> chosenBalls;
+	private List<Ball> opponentToMoveBalls;
+
+	/**
+	 * Default constructor for the Controller
+	 */
+	public Controller() {
+		this.myCounter = 0;
+		this.opponentCounter = 0;
+		this.state = MY_COLOR == WHITE ? CHOOSE_FIRST_BALL : null;
+		this.chosenBalls = new ArrayList<>();
+		this.opponentToMoveBalls = new ArrayList<>();
+	}
+
+	/**
+	 * Method initializing the controller. The representation of the board is being
+	 * made. Message listener is being set.
+	 */
+	@FXML
+	public void initialize() {
+		myBoard = new Board(board);
+		for (Ball tmpBall : myBoard.setBoard(MY_COLOR))
+			tmpBall.setOnMouseClicked(e -> clickBall(tmpBall));
+
+		setConsumerListener();
+	}
+
+	/**
+	 * Method is called, when user clicks on a ball
+	 * 
+	 * @param ball - clicked Ball
+	 */
+	void clickBall(Ball ball) {
+
+		if (state == CHOOSE_FIRST_BALL) {
+			chooseFirstBall(ball);
+		}
+
+		else if (state == CHOOSE_SECOND_BALL) {
+
+			Orientation orientation = chooseSecondBall(ball);
+			int k[] = makeMovesTable();
+			int numberOfBalls = chosenBalls.size();
+			int x2 = ball.getPosX();
+			int y2 = ball.getPosY();
+
+			for (Move move : tableOfMoves) {
+				if (k[move.id()] == numberOfBalls) {
+					move.setPossible(true);
+					ImageView tmpMoveButton = myBoard.setOneMoveButton(move, x2, y2);
+					tmpMoveButton.setOnMouseClicked(e -> moveChoiceClicked(move, orientation));
+				}
+
+			}
+			Move[] possibleMoves = orientation.possibleMoves();
+			for (Move tmpMove : possibleMoves) {
+				if (addMoveAlongLine(x2, y2, tmpMove))
+					;
+				tableOfMoves[tmpMove.id()].setPossible(true);
+			}
+		}
+	}
+
+	/**
+	 * Method is called, when user chose their first ball
+	 * 
+	 * @param ball - first chosen Ball
+	 */
+	void chooseFirstBall(Ball ball) {
+
+		ball.setImage(Ball.getChosenBallImg(MY_COLOR));
+		chosenBalls.add(ball);
+		state = CHOOSE_SECOND_BALL;
+	}
+
+	/**
+	 * Method is called, when user chose their second ball Method calls for creating
+	 * list of chosen balls
+	 * 
+	 * @param ball - second chosen Ball
+	 * @return orientation of the line made by chosen balls
+	 */
+	Orientation chooseSecondBall(Ball ball) {
+		int x1 = chosenBalls.get(0).getPosX();
+		int x2 = ball.getPosX();
+		int y1 = chosenBalls.get(0).getPosY();
+		int y2 = ball.getPosY();
+		int dx = x2 - x1;
+		int dy = y2 - y1;
+
+		if (!chosenBalls.get(0).equals(ball)) {
+			state = CHOOSE_MOVE;
+			return chooseBalls(dx, dy, x1, y1);
+		} else {
+			state = CHOOSE_MOVE;
+			return HORIZONTAL;
+		}
+	}
+
+	/**
+	 * Method creates a table of moves (table of integers, each one is a number of
+	 * free fields in every direction
+	 * 
+	 * @return a table of moves
+	 */
+	int[] makeMovesTable() {
+		int[] movesTable = { 0, 0, 0, 0, 0, 0 };
+
+		for (Ball tmpBall : chosenBalls) {
+			for (Move move : tableOfMoves) {
+				if (myBoard.getMyBallsList().getBall(tmpBall.getPosX() + move.dx(),
+						tmpBall.getPosY() + move.dy()) == null
+						&& myBoard.getOpponentBallsList().getBall(tmpBall.getPosX() + move.dx(),
+								tmpBall.getPosY() + move.dy()) == null)
+					movesTable[move.id()]++;
+			}
+		}
+		return movesTable;
+	}
+
+	/**
+	 * Method is called, when user clicks on a button, which indicates the direction
+	 * of a move
+	 * 
+	 * @param move        - chosen move direction
+	 * @param orientation - orientation of a line of chosen balls
+	 */
+	private void moveChoiceClicked(Move move, Orientation orientation) {
+
+		moveBalls(move, orientation); // moving balls on a board
+
+		Messaging.sendQueueMessage(Messaging.makeMsgString(chosenBalls, opponentToMoveBalls, move));
+		chosenBalls.removeAll(chosenBalls);
+		opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+	}
+
+	/**
+	 * Method moves balls on the board. Method calls Board class method to make a
+	 * move.
+	 * 
+	 * @param move        - the direction of a move
+	 * @param orientation - the orientation of a line of chosen balls
+	 */
+	void moveBalls(Move move, Orientation orientation) {
+		List<Ball> newBalls = myBoard.moveBalls(move, chosenBalls);
+		opponentCounter += chosenBalls.size() - newBalls.size();
+		opponentCounterText.setText(Integer.toString(opponentCounter));
+
+		for (Ball tmpBall : newBalls)
+			tmpBall.setOnMouseClicked(e -> clickBall(tmpBall));
+
+		if (orientation != null) {
+			Move[] movesAlongLine = orientation.possibleMoves();
+			if (!((movesAlongLine[0].equals(move) || movesAlongLine[1].equals(move))
+					&& tableOfMoves[move.id()].isPossible())) {
+				opponentToMoveBalls.removeAll(opponentToMoveBalls);
+			}
+		}
+
+		List<Ball> newOpponentBalls = myBoard.moveBalls(move, opponentToMoveBalls);
+		myCounter += opponentToMoveBalls.size() - newOpponentBalls.size();
+		myCounterText.setText(Integer.toString(myCounter));
+
+		if (myCounter >= 4) {
+			makeAlert("WYGRA£EŒ");
+		} else if (opponentCounter >= 4) {
+			makeAlert("PRZEGRA£EŒ");
+		}
+	}
+
+	/**
+	 * Method creates alert, shows it and set listener for "OK" button.
+	 * 
+	 * @param text - text shown in the alert
+	 */
+	private void makeAlert(String text) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Koniec gry!");
+			alert.setHeaderText(text);
+			alert.setContentText("Zakoñcz grê");
+			Optional<ButtonType> result = alert.showAndWait();
+			result.ifPresent(res -> {
+				state = GAME_ENDED;
+			});
+		});
+	}
+
+	/**
+	 * Method adding a possibility of moving along the line of chosen balls. Method
+	 * checks whether these moves are possible and creates new buttons for these
+	 * moves.
+	 * 
+	 * @param x2   - x position of the last ball in the line
+	 * @param y2   - y position of the last ball in the line
+	 * @param move - direction of a chosen move
+	 * @return whether these move is possible or not
+	 */
+	private boolean addMoveAlongLine(int x2, int y2, Move move) {
+		int dx = move.dx();
+		int dy = move.dy();
+
+		for (int i = 1; i <= chosenBalls.size(); i++) {
+			Ball tmpBall = myBoard.getMyBallsList().getBall(x2 + i * dx, y2 + i * dy);
+			if (tmpBall == null) {
+				Ball tmpOpponentBall = myBoard.getOpponentBallsList().getBall(x2 + i * dx, y2 + i * dy);
+				if (tmpOpponentBall == null) {
+					ImageView tmpMoveButton = myBoard.setOneMoveButton(move, x2 + (i - 1) * dx, y2 + (i - 1) * dy);
+					tmpMoveButton.setOnMouseClicked(e -> moveChoiceClicked(move, Orientation.getOrientation(dx, dy)));
+					return true;
+				} else {
+					opponentToMoveBalls.add(tmpOpponentBall);
+					if (i == chosenBalls.size())
+						opponentToMoveBalls.removeAll(opponentToMoveBalls);
+
+				}
+			} else {
+				if (chosenBalls.contains(tmpBall))
+					continue;
+				else {
+					opponentToMoveBalls.removeAll(opponentToMoveBalls);
+					break;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Method responsible for choosing a line of balls
+	 * 
+	 * @param dx - difference between x positions of second and first chosen balls
+	 * @param dy - difference between y positions of second and first chosen balls
+	 * @param x1 - x position of the first ball in the line
+	 * @param y1 - y position of the first ball in the line
+	 * @return orientation of chosen line of balls, null if balls are not in one
+	 *         line
+	 */
+	private Orientation chooseBalls(int dx, int dy, int x1, int y1) {
+		for (int i = 1;; i += 1) {
+			Ball tmpBall = myBoard.getMyBallsList().getBall(x1 + i * (int) Math.signum(dx),
+					y1 + i * (int) Math.signum(dy));
+			if (tmpBall != null) {
+				tmpBall.setImage(Ball.getChosenBallImg(MY_COLOR));
+				chosenBalls.add(tmpBall);
+			}
+			if (i == Math.abs(dx))
+				break;
+			if (i > 10)
+				break;
+		}
+		return Orientation.getOrientation(dx, dy);
+	}
+
+	/**
+	 * Method sets a listener for a consumer, which receive a message from the
+	 * server and then perform described action
+	 */
+	private void setConsumerListener() {
+		Messaging.getJmsConsumer().setMessageListener(message -> {
+			try {
+				String msg = ((TextMessage) message).getText();
+				Move move = Messaging.readFromMsgString(msg, myBoard.getMyBallsList(), myBoard.getOpponentBallsList());
+
+				chosenBalls = Messaging.getChosenBalls();
+				opponentToMoveBalls = Messaging.getOpponentToMoveBalls();
+				moveBalls(move, null);
+				chosenBalls.removeAll(chosenBalls);
+				opponentToMoveBalls.removeAll(opponentToMoveBalls);
+				state = CHOOSE_FIRST_BALL;
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+}
