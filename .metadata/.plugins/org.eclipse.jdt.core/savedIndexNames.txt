@@ -1,5 +1,6 @@
 INDEX VERSION 1.131+C:\Users\asus\Documents\eclipse-workspace\Zadanie-2-gracz2 — kopia (5)\.metadata\.plugins\org.eclipse.jdt.core
 1299478476.index
+967719751.index
 3139793388.index
 788393844.index
 2615716317.index
