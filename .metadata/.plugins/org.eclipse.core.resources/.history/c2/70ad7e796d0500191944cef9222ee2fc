@@ -156,6 +156,8 @@ public class BoardModel {
 					movesTable[move.id()]++;
 			}
 		}
+		System.out.println(
+				"" + movesTable[0] + movesTable[1] + movesTable[2] + movesTable[3] + movesTable[4] + movesTable[5]);
 		return movesTable;
 	}
 

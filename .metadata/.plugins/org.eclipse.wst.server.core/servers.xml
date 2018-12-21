@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <servers>
-  <server auto-publish-setting="1" glassfish.adminserverportnumber="4848" glassfish.domainpath="C:\Users\asus\Documents\eclipse-workspace\glassfish5\glassfish\domains\domain1" glassfish.serverportnumber="8080" hostname="localhost" id="GlassFish 5 [domain1]" name="GlassFish 5 [domain1]" runtime-id="GlassFish 5" server-type="glassfish.server" server-type-id="glassfish.server" start-timeout="240" stop-timeout="240" timestamp="34"/>
+  <server auto-publish-setting="1" glassfish.adminserverportnumber="4848" glassfish.domainpath="C:\Users\asus\Documents\eclipse-workspace\glassfish5\glassfish\domains\domain1" glassfish.serverportnumber="8080" hostname="localhost" id="GlassFish 5 [domain1]" name="GlassFish 5 [domain1]" runtime-id="GlassFish 5" server-type="glassfish.server" server-type-id="glassfish.server" start-timeout="240" stop-timeout="240" timestamp="38"/>
 </servers>

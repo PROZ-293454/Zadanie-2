@@ -46,6 +46,7 @@ public class BoardView {
 	 */
 
 	private Image getBallImage(ImageView ball, boolean isChosen) {
+		System.out.println("ballimg"+ ball);
 		Image img = ball.getImage();
 		if (img.equals(blackChosenBallImg) || img.equals(blackBallImg)) {
 			if (isChosen)
@@ -139,6 +140,21 @@ public class BoardView {
 		int newX = x1 + move.getDx();
 		int newY = y1 + move.getDy();
 		addLineOfBalls(newX, newY, dx, dy, lineLength, movedBalls);
+
+		/*
+		 * List<ImageView> movedBalls = new ArrayList<>();
+		 * 
+		 * int x = x1 + move.getDx(); int y = y1 + move.getDy();
+		 * 
+		 * for (int i = -lineLengthBack; i < lineLengthForward; i++) { x = x1 + dx * i;
+		 * y = y1 + dy * i;
+		 * 
+		 * try { ImageView newBall = moveBall(x, y, move.getDx(), move.getDy());
+		 * movedBalls.add(newBall); } catch (ArrayIndexOutOfBoundsException e) {
+		 * System.out.println("poza granicami"); continue; }
+		 * 
+		 * }
+		 */
 		return movedBalls;
 	}
 
@@ -165,6 +181,7 @@ public class BoardView {
 			try {
 				addBall(x, y, ball);
 			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("poza granicami");
 				continue;
 			}
 

@@ -43,7 +43,7 @@ public class Controller {
 	}
 
 	private void ballClicked(ImageView ball) {
-		if (boardModel.getState() == GAME_ENDED)
+		if (boardModel.getState() == GAME_ENDED) 
 			return;
 		int[] ballPos = boardView.getBallPos(ball);
 		int x = ballPos[0];
@@ -75,7 +75,7 @@ public class Controller {
 
 	private void moveButtonClicked(Step move, Step lineStep) {
 
-		moveBalls(move, lineStep);
+		moveBalls(move,lineStep);
 
 		sendBoard(move);
 		boardModel.moveBallLine(move);
@@ -88,10 +88,10 @@ public class Controller {
 		}
 		setPoints();
 	}
-
+	
 	private void moveBalls(Step move, Step lineStep) {
 		int[] firstBallPos = boardModel.getBallPos(0);
-		if (firstBallPos == null) {
+		if (firstBallPos==null) {
 			return;
 		}
 		int x1 = firstBallPos[0];
@@ -112,12 +112,10 @@ public class Controller {
 		Step lineStep = boardModel.getLineStep();
 		moveBalls(move, lineStep);
 		boardModel.moveBallLine(move);
-
+		
 		String msg = boardModel.endTurn();
-		if (msg != null) {
+		if (msg != null)
 			Alerts.makeGameEndAlert(msg, MY_COLOR);
-			boardModel.endGame();
-		}
 		setPoints();
 
 	}
@@ -134,6 +132,8 @@ public class Controller {
 			}
 		});
 	}
+
+	
 
 	private void setPoints() {
 		myCounterText.setText(Integer.toString(boardModel.getMyCounter()));
