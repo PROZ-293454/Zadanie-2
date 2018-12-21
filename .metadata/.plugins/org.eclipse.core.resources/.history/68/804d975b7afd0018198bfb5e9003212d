@@ -1,0 +1,29 @@
+package view;
+
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
+public class BoardView {
+	
+	private ImageView board[][];
+	private GridPane boardPane;
+	
+	public BoardView(GridPane boardPane) {
+		this.board = new ImageView[18][9];
+		this.boardPane = boardPane;
+	}
+	
+	public void deleteBall(int x, int y) {
+		ImageView ball = board[x][y];
+		boardPane.getChildren().remove(ball);
+	}
+	
+	public ImageView addBall(int x, int y, Color color) {
+		ImageView ball = new ImageView(getBallImage(color));
+		boardPane.add(ball, x, y, 2, 1);
+		return ball;
+	}
+	
+	
+	
+}

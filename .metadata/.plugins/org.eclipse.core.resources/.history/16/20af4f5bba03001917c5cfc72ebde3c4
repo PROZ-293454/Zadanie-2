@@ -1,0 +1,82 @@
+package controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.BoardModel;
+import model.Step;
+import view.BoardView;
+import view.ImageMove;
+
+import static model.State.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static model.BoardModel.MY_COLOR;
+
+public class Controller {
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+
+	BoardView boardView;
+	BoardModel boardModel;
+
+	@FXML
+	public void initialize() {
+		boardModel = new BoardModel();
+		boardView = new BoardView(board);
+		for (ImageView ball : boardView.setBoard(MY_COLOR))
+			ball.setOnMouseClicked(e -> ballClicked(ball));
+	}
+
+	private void ballClicked(ImageView ball) {
+		int[] ballPos = boardView.getBallPos(ball);
+		int x = ballPos[0];
+		int y = ballPos[1];
+		System.out.println(boardModel.getState());
+
+		if (boardModel.getState() == CHOOSE_FIRST_BALL) {
+			boardView.setChosen(x, y);
+			boardModel.chooseFirstBall(x, y);
+			System.out.println(boardModel.getState());
+		} else if (boardModel.getState() == CHOOSE_SECOND_BALL) {
+			Step lineStep = boardModel.chooseBallLine(x, y);
+			if (lineStep != null) {
+
+				int[] firstBallPos = boardModel.getFirstBallPos();
+				int x1 = firstBallPos[0];
+				int y1 = firstBallPos[1];
+				int lineLength = boardModel.getLineLength();
+
+				boardView.setChosenLine(x1, y1, lineStep.dx(), lineStep.dy(), lineLength);
+
+				List<Step> listOfMoves = boardModel.createListOfMoves();
+				for (Step move : listOfMoves) {
+					ImageView moveButton = boardView.addMoveButton(x1, y1, new ImageMove(move.dx(), move.dy()));
+					moveButton.setOnMouseClicked(e -> moveButtonClicked(move, lineStep));
+				}
+			}
+		}
+
+	}
+
+	private void moveButtonClicked(Step move, Step lineStep) {
+
+		int[] firstBallPos = boardModel.getBallPos(boardModel.getLineLength()-1);
+		int x1 = firstBallPos[0];
+		int y1 = firstBallPos[1];
+		int lineLength = boardModel.getLineLength();
+
+		boardView.moveLineOfBalls(x1, y1, lineStep.dx(), lineStep.dy(), lineLength,
+				new ImageMove(move.dx(), move.dy()));
+		boardModel.moveBallLine(move);
+		boardView.deleteAllMoveButtons();
+	}
+
+}

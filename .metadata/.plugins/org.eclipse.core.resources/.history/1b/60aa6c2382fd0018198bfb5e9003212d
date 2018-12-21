@@ -1,0 +1,117 @@
+package view;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import static view.Color.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BoardView {
+
+	private final static Image blackBallImg;
+	private final static Image whiteBallImg;
+	private final static Image blackChosenBallImg;
+	private final static Image whiteChosenBallImg;
+	private final static Image moveButtonImg;
+
+	static {
+		blackBallImg = new Image(BoardView.class.getResourceAsStream("black_ball.png"));
+		whiteBallImg = new Image(BoardView.class.getResourceAsStream("white_ball.png"));
+		blackChosenBallImg = new Image(BoardView.class.getResourceAsStream("black_chosen_ball.png"));
+		whiteChosenBallImg = new Image(BoardView.class.getResourceAsStream("white_chosen_ball.png"));
+		moveButtonImg = new Image(BoardView.class.getResourceAsStream("move.png"));
+	}
+
+	private ImageView[][] board;
+	private List<ImageView> moveButtons;
+	private GridPane boardPane;
+
+	public BoardView(GridPane boardPane) {
+		this.board = new ImageView[18][9];
+		this.moveButtons = new ArrayList<>();
+		this.boardPane = boardPane;
+	}
+
+	private Image getBallImage(Color color, boolean isChosen) {
+		if (isChosen)
+			return color == BLACK ? blackChosenBallImg : whiteChosenBallImg;
+		else
+			return color == BLACK ? blackBallImg : whiteBallImg;
+	}
+
+	/*
+	 * private ImageView addBall(int x, int y, Color color) { ImageView ball = new
+	 * ImageView(getBallImage(color, false)); boardPane.add(ball, x, y, 2, 1);
+	 * return ball; }
+	 */
+
+	public ImageView addBall(int x, int y, ImageView ball) throws ArrayIndexOutOfBoundsException{
+		board[x][y] = ball;
+		boardPane.add(ball, x, y, 2, 1);
+		return ball;
+	}
+
+	private ImageView deleteBall(int x, int y) {
+		ImageView ball = board[x][y];
+		boardPane.getChildren().remove(ball);
+		board[x][y] = null;
+		return ball;
+	}
+
+	private ImageView moveBall(int x, int y) throws ArrayIndexOutOfBoundsException {
+		ImageView ball = deleteBall(x, y);
+		return addBall(x, y, ball);
+	}
+
+	private ImageView addMoveButton(int x, int y, Move move) {
+		int dx = move.getDx();
+		int dy = move.getDy();
+		int rotation = move.getRotation();
+
+		ImageView moveButton = new ImageView(moveButtonImg);
+		moveButton.setRotate(rotation);
+
+		moveButtons.add(moveButton);
+		boardPane.add(moveButton, x + dx, y + dy, 2, 1);
+		return moveButton;
+	}
+
+	private void deleteMoveButton(ImageView moveButton) {
+
+		moveButtons.remove(moveButton);
+		boardPane.getChildren().remove(moveButton);
+	}
+
+	public List<ImageView> moveLineOfBalls(int x1, int y1, int dx, int dy, int numberOfBalls) {
+		List<ImageView> movedBalls = new ArrayList<>();
+
+		for (int i = 0; i < numberOfBalls; i++) {
+			int x = x1 + dx * i;
+			int y = y1 + dy * i;
+			
+			try {
+				ImageView newBall = moveBall(x, y);
+				movedBalls.add(newBall);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("poza granicami");
+			}
+		}
+
+		return movedBalls;
+	}
+
+	public List<ImageView> addAllMoveButtons(int x, int y, List<Move> possibleMovesList) {
+		for (Move move : possibleMovesList)
+			addMoveButton(x, y, move);
+
+		return moveButtons;
+	}
+
+	public void deleteAllMoveButtons(int x, int y) {
+		for (ImageView moveButton : moveButtons)
+			deleteMoveButton(moveButton);
+	}
+
+}

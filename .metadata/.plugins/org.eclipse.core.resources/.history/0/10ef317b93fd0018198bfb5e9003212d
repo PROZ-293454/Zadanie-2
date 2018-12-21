@@ -1,0 +1,35 @@
+package model;
+
+import view.Color;
+
+public class Ball {
+	private Color color;
+	private int x;
+	private int y;
+	
+
+	public Ball(Color color, int x, int y) {
+		this.color = color;
+		this.x = x;
+		this.y = y;
+	}
+	
+	public Ball moveBall(int dx, int dy) {
+		x +=dx;
+		y +=dy;
+		return this;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+}

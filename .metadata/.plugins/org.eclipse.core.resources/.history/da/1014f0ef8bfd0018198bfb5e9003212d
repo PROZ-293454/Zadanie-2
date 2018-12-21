@@ -1,0 +1,5 @@
+package old.model;
+
+public enum State {
+	CHOOSE_FIRST_BALL, CHOOSE_SECOND_BALL, CHOOSE_MOVE, GAME_ENDED
+};

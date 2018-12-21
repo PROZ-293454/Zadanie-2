@@ -1,0 +1,58 @@
+package controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.BoardModel;
+import model.Step;
+import view.BoardView;
+import static view.Color.*;
+import static model.State.*;
+import static model.BoardModel.MY_COLOR;
+
+public class Controller {
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+
+	BoardView boardView;
+	BoardModel boardModel;
+
+	@FXML
+	public void initialize() {
+		boardModel = new BoardModel();
+		boardView = new BoardView(board);
+		for (ImageView ball : boardView.setBoard(MY_COLOR))
+			ball.setOnMouseClicked(e -> ballClicked(ball));
+	}
+
+	private void ballClicked(ImageView ball) {
+		int[] ballPos = boardView.getBallPos(ball);
+		int x = ballPos[0];
+		int y = ballPos[1];
+		System.out.println(boardModel.getState());
+
+		if (boardModel.getState() == CHOOSE_FIRST_BALL) {
+			boardView.setChosen(x, y, MY_COLOR);
+			boardModel.chooseFirstBall(x, y);
+			System.out.println(boardModel.getState());
+		}
+		else if (boardModel.getState() == CHOOSE_SECOND_BALL) {
+			boolean isLineChosen = boardModel.chooseBallLine(x, y);
+			if (isLineChosen) {
+				int[] firstBallPos = boardModel.getFirstBallPos();
+				int lineLength = boardModel.getLineLength();
+				Step lineStep = boardModel.getLineStep();
+				System.out.print(lineStep.dx());
+				
+				boardView.setChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), lineLength, MY_COLOR);
+			}
+		}
+		
+	}
+
+}

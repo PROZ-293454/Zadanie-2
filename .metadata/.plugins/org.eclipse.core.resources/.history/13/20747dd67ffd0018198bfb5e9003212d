@@ -1,0 +1,50 @@
+package view;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import static view.Color.*;
+
+public class BoardView {
+
+	private final static Image blackBallImg;
+	private final static Image whiteBallImg;
+	private final static Image blackChosenBallImg;
+	private final static Image whiteChosenBallImg;
+	private final static Image moveButtonImg;
+
+	static {
+		blackBallImg = new Image(BoardView.class.getResourceAsStream("black_ball.png"));
+		whiteBallImg = new Image(BoardView.class.getResourceAsStream("white_ball.png"));
+		blackChosenBallImg = new Image(BoardView.class.getResourceAsStream("black_chosen_ball.png"));
+		whiteChosenBallImg = new Image(BoardView.class.getResourceAsStream("white_chosen_ball.png"));
+		moveButtonImg = new Image(BoardView.class.getResourceAsStream("move.png"));
+	}
+
+	private ImageView board[][];
+	private GridPane boardPane;
+
+	public BoardView(GridPane boardPane) {
+		this.board = new ImageView[18][9];
+		this.boardPane = boardPane;
+	}
+
+	private ImageView addBall(int x, int y, Color color) {
+		ImageView ball = new ImageView(getBallImage(color, false));
+		boardPane.add(ball, x, y, 2, 1);
+		return ball;
+	}
+
+	private void deleteBall(int x, int y) {
+		ImageView ball = board[x][y];
+		boardPane.getChildren().remove(ball);
+	}
+
+	private Image getBallImage(Color color, boolean isChosen) {
+		if (isChosen) return color == BLACK ? blackChosenBallImg : whiteChosenBallImg;
+		else return color == BLACK ? blackBallImg : whiteBallImg;
+	}
+	
+	a
+
+}

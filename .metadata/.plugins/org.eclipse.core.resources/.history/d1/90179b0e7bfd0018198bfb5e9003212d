@@ -1,0 +1,201 @@
+package old.view;
+
+import static old.model.Ball.Color.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.application.Platform;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import old.controller.Controller;
+import old.model.Ball;
+import old.model.ListOfBalls;
+import old.model.Move;
+import old.model.Ball.Color;
+
+public class Board {
+
+	private ListOfBalls myBallsList;
+	private ListOfBalls opponentBallsList;
+	private GridPane board;
+	private List<ImageView> moveButtons;
+	private Image arrow = new Image(Main.class.getResourceAsStream("move.png"));
+
+	/**
+	 * Constructor of the board
+	 * 
+	 * @param xboard - GridPane that a board has to be set on
+	 */
+	public Board(GridPane xboard) {
+		this.board = xboard;
+		this.myBallsList = new ListOfBalls();
+		this.opponentBallsList = new ListOfBalls();
+		this.moveButtons = new ArrayList<>();
+	}
+
+	/**
+	 * Method chooses the list depending on the color of the user
+	 * 
+	 * @param color - color of user's balls
+	 * @return list of user's balls
+	 */
+	private List<Ball> getList(Color color) {
+		if (color == Controller.MY_COLOR)
+			return myBallsList;
+		else
+			return opponentBallsList;
+	}
+
+	/**
+	 * Method checks, whether a ball was pushed outside of the board
+	 * 
+	 * @param x - x position of the ball
+	 * @param y - y position of the board
+	 * @return whether a ball was pushed
+	 */
+	private boolean isPushed(int x, int y) {
+		if (y == 0 || y == 10)
+			return true;
+		else if (x + y <= 5)
+			return true;
+		else if (x + y >= 24)
+			return true;
+		else if (x - y >= 14)
+			return true;
+		else if (x - y <= -5)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Method moves balls on the board. Method deletes old chosen balls and creates
+	 * new ones in the right places.
+	 * 
+	 * @param move        - direction of a chosen move
+	 * @param chosenBalls - list of balls that are being moved
+	 * @return list of moved balls.
+	 */
+	public List<Ball> moveBalls(Move move, List<Ball> chosenBalls) {
+		int dx = move.dx();
+		int dy = move.dy();
+		List<Ball> movedBalls = new ArrayList<>();
+		System.out.println("chosenBallslength: " + chosenBalls.size());
+
+		for (Ball tmpBall : chosenBalls) {
+			if (tmpBall == null)
+				continue;
+			int x = tmpBall.getPosX();
+			int y = tmpBall.getPosY();
+			Color color = tmpBall.getColor();
+			getList(color).remove(tmpBall);
+			Platform.runLater(() -> {
+				board.getChildren().remove(tmpBall);
+			});
+			if (!isPushed(x + dx, y + dy)) {
+				Ball newBall = new Ball(color, x + dx, y + dy);
+				movedBalls.add(newBall);
+				Platform.runLater(() -> {
+					board.add(newBall, x + dx, y + dy);
+				});
+				getList(color).add(newBall);
+			}
+		}
+		if (moveButtons.size() > 0)
+			board.getChildren().removeAll(moveButtons);
+		moveButtons.removeAll(moveButtons);
+		return movedBalls;
+	}
+
+	/**
+	 * Getter for a list of user's balls
+	 * 
+	 * @return list of user's balls
+	 */
+	public ListOfBalls getMyBallsList() {
+		return myBallsList;
+	}
+
+	/**
+	 * Getter for a list of opponent's balls
+	 * 
+	 * @return list of opponent's balls
+	 */
+	public ListOfBalls getOpponentBallsList() {
+		return opponentBallsList;
+	}
+
+	/**
+	 * Method creates a button for one move and sets on on the board.
+	 * 
+	 * @param move - direction of a chosen move
+	 * @param x    - x position of the last chosen ball
+	 * @param y    - y position of the last chosen ball
+	 * @return the created move button
+	 */
+	public ImageView setOneMoveButton(Move move, int x, int y) {
+		ImageView btn = new ImageView(arrow);
+		btn.setRotate(move.angle());
+		moveButtons.add(btn);
+		// btn.setOnMouseClicked(e -> moveChoiceClicked(move));
+		board.add(btn, x + move.dx(), y + move.dy(), 1, 1);
+		return btn;
+	}
+
+	/**
+	 * Method creates all the balls on the board. Method adds the balls to the too
+	 * lists and the GridPane.
+	 * 
+	 * @param color - the color of user's balls
+	 * @return list of user's balls
+	 */
+	public List<Ball> setBoard(Color color) {
+		ListOfBalls ballsList1 = new ListOfBalls();
+		ListOfBalls ballsList2 = new ListOfBalls();
+		if (color == BLACK) {
+			myBallsList = ballsList1;
+			opponentBallsList = ballsList2;
+		} else {
+			myBallsList = ballsList2;
+			opponentBallsList = ballsList1;
+		}
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(BLACK, i, 1);
+			ballsList1.add(ball);
+			board.add(ball, i, 1);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(BLACK, i, 2);
+			ballsList1.add(ball);
+			board.add(ball, i, 2);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(BLACK, i, 3);
+			ballsList1.add(ball);
+			board.add(ball, i, 3);
+		}
+
+		// adding opponent's balls
+		for (int i = 6; i < 15; i += 2) {
+			Ball ball = new Ball(WHITE, i, 9);
+			ballsList2.add(ball);
+			board.add(ball, i, 9);
+		}
+		for (int i = 5; i < 16; i += 2) {
+			Ball ball = new Ball(WHITE, i, 8);
+			ballsList2.add(ball);
+			board.add(ball, i, 8);
+		}
+		for (int i = 8; i < 13; i += 2) {
+			Ball ball = new Ball(WHITE, i, 7);
+			ballsList2.add(ball);
+			board.add(ball, i, 7);
+		}
+
+		return myBallsList;
+
+	}
+
+}

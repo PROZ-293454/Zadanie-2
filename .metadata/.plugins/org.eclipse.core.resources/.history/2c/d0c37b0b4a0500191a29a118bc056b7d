@@ -1,0 +1,64 @@
+package controller;
+
+import java.util.Optional;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
+import view.Color;
+import static view.Color.*;
+import javafx.scene.control.Alert.AlertType;
+
+public class Alerts {
+	private static final String TO_WIN = "Aby wygraæ, musisz zbiæ 4 kulki przeciwnika, spychaj¹c je poza pole lini¹ z³o¿on¹ z Twoich kulek (d³u¿sz¹, ni¿ linia przeciwnika, któr¹ chcesz zbiæ.\n";
+	private static final String RULES = "1. Wybierz pierwsz¹ kulkê.\n2. Wybierz drug¹ kulkê tak, by z wybranych kulek oraz kul pomiêdzy nimi powsta³a linia (nie d³u¿sza ni¿ 3 kulki).\n3.Wybierz, w któr¹ stronê chcesz siê ruszyæ\n";
+
+	static void makeGameEndAlert(String text) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Koniec gry!");
+			alert.setHeaderText(text);
+			alert.setContentText("Zakoñcz grê");
+			Optional<ButtonType> result = alert.showAndWait();
+
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+			result.ifPresent(res -> {
+			});
+		});
+	}
+
+	static void makeGameStartAlert(Color color) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Nowa gra");
+			alert.setHeaderText("Twój kolor to:" + color);
+			if (color == WHITE)
+				alert.setContentText("Rozpoczynasz grê.\n" + TO_WIN + RULES);
+			else
+				alert.setContentText("Poczekaj na swoj¹ kolejkê.\n" + TO_WIN);
+
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+			Optional<ButtonType> result = alert.showAndWait();
+			result.ifPresent(res -> {
+			});
+		});
+	}
+
+	static void makeTurnAlert(Color color) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Twój ruch.");
+			alert.setHeaderText("Twój kolor to:" + color);
+			alert.setContentText(RULES);
+
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+			Optional<ButtonType> result = alert.showAndWait();
+			result.ifPresent(res -> {
+			});
+		});
+	}
+}

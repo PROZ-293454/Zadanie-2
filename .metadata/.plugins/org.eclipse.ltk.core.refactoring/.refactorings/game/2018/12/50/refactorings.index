@@ -4,3 +4,28 @@
 1544470054678	Rename method 'setMoves'
 1544471410027	Move compilation unit
 1544478718335	Move compilation unit
+1544555830436	Rename package 'view'
+1544555842314	Rename package 'model'
+1544555851605	Rename package 'controller'
+1544556263794	Rename resource 'baseline_brightness_1_black_48dp.png'
+1544556294130	Rename resource 'baseline_brightness_1_white_48dp.png'
+1544556316410	Rename resource 'round_album_black_48dp.png'
+1544556324129	Rename resource 'round_album_white_48dp.png'
+1544556328743	Move files
+1544556333985	Move file
+1544556346119	Move file
+1544556348929	Move file
+1544556560381	Move compilation unit
+1544556574488	Move compilation unit
+1544562771051	Copy compilation unit
+1544562874315	Copy compilation unit
+1544563737275	Rename type 'Move'
+1544563777616	Rename type 'ImgMove'
+1544563810299	Move compilation units
+1544563818836	Rename package 'Model'
+1544564146280	Rename type 'Move'
+1544566963901	Rename compilation unit 'MoveDirection.java'
+1544567582937	Delete element
+1544571138558	Move file
+1544571184871	Move compilation unit
+1544571196097	Move file

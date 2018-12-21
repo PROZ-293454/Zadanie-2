@@ -1,0 +1,13 @@
+package model;
+
+public class BallLine extends ListOfBalls {
+	Orientation orientation;
+
+	public BallLine(Orientation orientation) {
+		super();
+		this.orientation = orientation;
+	}
+
+
+	
+}

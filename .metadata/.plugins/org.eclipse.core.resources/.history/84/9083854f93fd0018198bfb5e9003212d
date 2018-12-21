@@ -1,0 +1,27 @@
+package model;
+
+import static model.MoveDirection.*;
+
+public enum Orientation {
+	DIAGONAL_NE_WS(NE, SW), DIAGONAL_NW_SE(NW, SE), HORIZONTAL(E, W);
+	private MoveDirection[] possibleMoves;
+
+	Orientation(MoveDirection move1, MoveDirection move2) {
+		this.possibleMoves = new MoveDirection[2];
+		this.possibleMoves[0] = move1;
+		this.possibleMoves[1] = move2;
+	}
+
+	public static Orientation getOrientation(int dx, int dy) {
+		if (dy == 0)
+			return HORIZONTAL;
+		else if (dx == dy)
+			return DIAGONAL_NW_SE;
+		else
+			return DIAGONAL_NE_WS;
+	}
+
+	public MoveDirection[] possibleMoves() {
+		return this.possibleMoves;
+	}
+};

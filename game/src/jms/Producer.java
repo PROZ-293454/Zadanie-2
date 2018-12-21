@@ -13,9 +13,6 @@ public class Producer {
 
 	public Producer(String url, String queueName) throws JMSException {
 		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
-// [hostName][:portNumber][/serviceName]
-// 7676 numer portu, na którym JMS Service nas³uchuje po³¹czeñ
-// "localhost:7676/jms"
 		jmsContext = connectionFactory.createContext();
 		((com.sun.messaging.ConnectionFactory) connectionFactory)
 				.setProperty(com.sun.messaging.ConnectionConfiguration.imqAddressList, url);

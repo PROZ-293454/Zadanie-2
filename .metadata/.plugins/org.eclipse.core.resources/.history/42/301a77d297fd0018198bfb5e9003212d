@@ -1,0 +1,120 @@
+package model;
+
+import view.Color;
+import model.State;
+
+import static view.Color.*;
+
+import java.util.List;
+
+import static model.State.*;
+
+public class BoardModel {
+
+	private ListOfBalls myBalls;
+	private ListOfBalls opponentBalls;
+	private ListOfBalls myBallsToMove;
+	private ListOfBalls opponentBallsToMove;
+	public static final Color MY_COLOR = WHITE;
+	public State state;
+
+	public BoardModel() {
+		this.myBalls = new ListOfBalls();
+		this.opponentBalls = new ListOfBalls();
+		this.myBallsToMove = new ListOfBalls();
+		this.opponentBallsToMove = new ListOfBalls();
+		this.state = MY_COLOR == WHITE ? CHOOSE_FIRST_BALL : null;
+		setBoardModel();
+	}
+
+	private boolean isOnBoard(int x, int y) {
+		if (x + y < 4 || x + y > 20 || x - y > 12 || x - y < -4)
+			return false;
+		else
+			return true;
+	}
+
+	private ListOfBalls getList(Color color) {
+		if (color == MY_COLOR)
+			return myBalls;
+		else
+			return opponentBalls;
+	}
+
+	private Ball moveBall(int x, int y, Color color, Step move) {
+		Ball ball = getList(color).getBall(x, y);
+		boolean isMoved = ball.move(move.dx(), move.dy());
+		
+		if (isMoved)
+			return ball;
+		else {
+			getList(color).remove(ball);
+			return null;
+		}
+	}
+	
+	public Ball chooseFirstBall(int x, int y) {
+		Ball ball = myBalls.getBall(x, y);
+		myBallsToMove.add(ball);
+		
+		state = CHOOSE_SECOND_BALL;
+		return ball;
+	}
+	
+	public BallLine chooseBallLine(int x1, int y1, int x2, int y2) {
+		int dx2_1 = x2-x1;
+		int dy2_1 = y2-y1;
+		Step step = Step.getStep(dx2_1, dy2_1);
+		if (step!=null) {
+			int dx = step.dx();
+			int dy = step.dy();
+			int lineLength = (Math.abs(dx2_1) + Math.abs(dy2_1))/2;
+			
+			for (int i=0; i<lineLength; i++) {
+				
+			}
+		}
+		else return null;
+		
+	}
+
+	private void setBoardModel() {
+
+		ListOfBalls ballsList1 = new ListOfBalls();
+		ListOfBalls ballsList2 = new ListOfBalls();
+		if (MY_COLOR == BLACK) {
+			myBalls = ballsList1;
+			opponentBalls = ballsList2;
+		} else {
+			myBalls = ballsList2;
+			opponentBalls = ballsList1;
+		}
+		for (int i = 4; i <= 12; i += 2) {
+			Ball ball = new Ball(BLACK, i, 0);
+			ballsList1.add(ball);
+		}
+		for (int i = 3; i <= 13; i += 2) {
+			Ball ball = new Ball(BLACK, i, 1);
+			ballsList1.add(ball);
+		}
+		for (int i = 6; i <= 10; i += 2) {
+			Ball ball = new Ball(BLACK, i, 2);
+			ballsList1.add(ball);
+		}
+
+		// adding opponent's balls
+		for (int i = 4; i <= 12; i += 2) {
+			Ball ball = new Ball(WHITE, i, 8);
+			ballsList2.add(ball);
+		}
+		for (int i = 3; i <= 13; i += 2) {
+			Ball ball = new Ball(WHITE, i, 7);
+			ballsList2.add(ball);
+		}
+		for (int i = 6; i <= 10; i += 2) {
+			Ball ball = new Ball(WHITE, i, 6);
+			ballsList2.add(ball);
+		}
+	}
+
+}

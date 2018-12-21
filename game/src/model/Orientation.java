@@ -1,13 +1,13 @@
 package model;
 
-import static model.Move.*;
+import static model.Step.*;
 
 public enum Orientation {
 	DIAGONAL_NE_WS(NE, SW), DIAGONAL_NW_SE(NW, SE), HORIZONTAL(E, W);
-	private Move[] possibleMoves;
+	private Step[] possibleMoves;
 
-	Orientation(Move move1, Move move2) {
-		this.possibleMoves = new Move[2];
+	Orientation(Step move1, Step move2) {
+		this.possibleMoves = new Step[2];
 		this.possibleMoves[0] = move1;
 		this.possibleMoves[1] = move2;
 	}
@@ -21,7 +21,7 @@ public enum Orientation {
 			return DIAGONAL_NE_WS;
 	}
 
-	public Move[] possibleMoves() {
+	public Step[] movesAlongLine() {
 		return this.possibleMoves;
 	}
 };

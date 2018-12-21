@@ -1,0 +1,13 @@
+package Model;
+
+import old.model.ListOfBalls;
+
+public class BoardModel {
+	
+	private ListOfBalls myBallst;
+	private ListOfBalls opponentBalls;
+	private ListOfBalls myBallsToMove;
+	private ListOfBalls opponentBallsToMove;
+	
+	
+}

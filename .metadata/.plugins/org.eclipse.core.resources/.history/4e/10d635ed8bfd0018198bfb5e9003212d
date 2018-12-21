@@ -1,0 +1,10 @@
+package Model;
+
+import old.model.ListOfBalls;
+
+public class BoardModel {
+	
+	private ListOfBalls myBallsList;
+	private ListOfBalls opponentBallsList;
+	
+}

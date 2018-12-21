@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #546e7a;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <VBox fillWidth="false" maxHeight="1.7976931348623157E308" minHeight="-Infinity">
+      <VBox fillWidth="false">
          <children>
             <HBox>
                <children>
@@ -28,40 +29,40 @@
             </HBox>
             <GridPane fx:id="board" VBox.vgrow="NEVER">
                <columnConstraints>
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
-                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
+                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="28.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" vgrow="NEVER" />
                </rowConstraints>
                <children>
                   <ImageView fitHeight="449.0" fitWidth="507.0" pickOnBounds="true" GridPane.columnIndex="10" GridPane.rowIndex="5">
@@ -70,6 +71,9 @@
                      </image>
                   </ImageView>
                </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
             </GridPane>
          </children>
       </VBox>

@@ -16,8 +16,6 @@ public class Consumer {
 	public Consumer(String url, String queueName) throws JMSException {
 		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
 		jmsContext = connectionFactory.createContext();
-// 7676 numer portu, na którym JMS Service nas³uchuje po³¹czeñ
-// [hostName][:portNumber][/serviceName] np. "localhost:7676/jms"
 		((com.sun.messaging.ConnectionFactory) connectionFactory)
 				.setProperty(com.sun.messaging.ConnectionConfiguration.imqAddressList, url);
 		queue = new com.sun.messaging.Queue(queueName); // "ATJQueue"
@@ -37,7 +35,6 @@ public class Consumer {
 		if (jmsContext != null)
 			jmsContext.close();
 	}
-	
 
 	public JMSConsumer getJmsConsumer() {
 		return jmsConsumer;

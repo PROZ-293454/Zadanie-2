@@ -1,0 +1,22 @@
+package view;
+
+public class ImgMove {
+	private int dx;
+	private int dy;
+	private int rotation;
+	public ImgMove(int dx, int dy, int rotation) {
+		this.dx = dx;
+		this.dy = dy;
+		this.rotation = rotation;
+		// TODO Auto-generated constructor stub
+	}
+	public int getDx() {
+		return dx;
+	}
+	public int getDy() {
+		return dy;
+	}
+	public int getRotation() {
+		return rotation;
+	}
+}

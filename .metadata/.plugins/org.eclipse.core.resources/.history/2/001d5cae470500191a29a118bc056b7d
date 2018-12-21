@@ -1,0 +1,147 @@
+package controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.BoardModel;
+import model.MessagingModel;
+import model.Step;
+import view.BoardView;
+import view.ImageMove;
+
+import static model.State.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+import static model.BoardModel.MY_COLOR;
+
+public class Controller {
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+
+	BoardView boardView;
+	BoardModel boardModel;
+	MessagingModel msgModel;
+
+	@FXML
+	public void initialize() {
+		boardModel = new BoardModel();
+		boardView = new BoardView(board);
+		msgModel = new MessagingModel(boardModel);
+		for (ImageView ball : boardView.setBoard(MY_COLOR))
+			ball.setOnMouseClicked(e -> ballClicked(ball));
+		setConsumerListener();
+		Alerts.makeGameStartAlert(MY_COLOR);
+	}
+
+	private void ballClicked(ImageView ball) {
+		int[] ballPos = boardView.getBallPos(ball);
+		int x = ballPos[0];
+		int y = ballPos[1];
+		System.out.println(boardModel.getState());
+
+		if (boardModel.getState() == CHOOSE_FIRST_BALL) {
+			boardView.setChosen(x, y);
+			boardModel.chooseFirstBall(x, y);
+			System.out.println(boardModel.getState());
+		} else if (boardModel.getState() == CHOOSE_SECOND_BALL) {
+			Step lineStep = boardModel.chooseBallLine(x, y);
+			if (lineStep != null) {
+
+				int myLineLength = boardModel.getLineLength();
+				int[] firstBallPos = boardModel.getBallPos(0);
+				int[] lastBallPos = boardModel.getBallPos(myLineLength - 1);
+
+				boardView.setChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), myLineLength);
+
+				List<Step> listOfMoves = boardModel.createListOfMoves();
+				for (Step move : listOfMoves) {
+					ImageView moveButton = boardView.addMoveButton(lastBallPos[0], lastBallPos[1],
+							new ImageMove(move.dx(), move.dy()));
+					moveButton.setOnMouseClicked(e -> moveButtonClicked(move, lineStep));
+				}
+			}
+		}
+
+	}
+
+	private void moveButtonClicked(Step move, Step lineStep) {
+
+		moveBalls(move,lineStep);
+
+		sendBoard(move);
+		boardModel.moveBallLine(move);
+		boardView.deleteAllMoveButtons();
+
+		String msg = boardModel.endTurn();
+		if (msg != null)
+			Alerts.makeGameEndAlert(msg);
+		setPoints();
+	}
+	
+	private void moveBalls(Step move, Step lineStep) {
+		int[] firstBallPos = boardModel.getBallPos(0);
+		if (firstBallPos==null) {
+			System.out.println("firstballpos==null");
+			return;
+		}
+		int x1 = firstBallPos[0];
+		int y1 = firstBallPos[1];
+		int lineLength = boardModel.getLineLength();
+		System.out.println(x1+y1+lineStep.dx()+lineStep.dy()+"lineLength"+lineLength);
+
+		boardView.moveLineOfBalls(x1, y1, lineStep.dx(), lineStep.dy(), lineLength,
+				new ImageMove(move.dx(), move.dy()));
+	}
+
+	private void sendBoard(Step move) {
+		String message = msgModel.makeMsgString(move);
+		MessagingModel.sendQueueMessage(message);
+	}
+
+	private void receiveBoard(String message) {
+		Step move = msgModel.readFromMsgString(message);
+		Step lineStep = boardModel.getLineStep();
+		System.out.println("lineStep w receiveboard "+lineStep + boardModel.getLineLength());
+		moveBalls(move, lineStep);
+		boardModel.moveBallLine(move);
+		
+		String msg = boardModel.endTurn();
+		if (msg != null)
+			Alerts.makeGameEndAlert(msg);
+		setPoints();
+
+	}
+
+	private void setConsumerListener() {
+		MessagingModel.getJmsConsumer().setMessageListener(message -> {
+			try {
+				String msg = ((TextMessage) message).getText();
+				System.out.println(msg);
+				receiveBoard(msg);
+				boardModel.startTurn();
+				Alerts.makeTurnAlert(MY_COLOR);
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	
+
+	private void setPoints() {
+		myCounterText.setText(Integer.toString(boardModel.getMyCounter()));
+		opponentCounterText.setText(Integer.toString(boardModel.getOpponentCounter()));
+
+	}
+
+}

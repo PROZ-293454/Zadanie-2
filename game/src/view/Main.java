@@ -1,6 +1,6 @@
 package view;
-
 import javafx.application.Application;
+import static model.BoardModel.MY_COLOR;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,9 +10,8 @@ public class Main  extends Application {
 
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		launch(args);
-
+		
+			launch(args);
 	}
 
 	
@@ -24,6 +23,7 @@ public class Main  extends Application {
 			Scene scene = new Scene(root, 600, 600);
 			//GridPane grid = new GridPane();
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Gracz "+MY_COLOR);
 			primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();

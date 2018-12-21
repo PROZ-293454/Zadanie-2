@@ -1,55 +1,41 @@
 package model;
 
-import static model.Ball.Color.*;
+import view.Color;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import view.Main;
-
-public class Ball extends ImageView {
-
-	public static Image blackBallImg = new Image(
-			Main.class.getResourceAsStream("baseline_brightness_1_black_48dp.png"));
-	public static Image whiteBallImg = new Image(
-			Main.class.getResourceAsStream("baseline_brightness_1_white_48dp.png"));
-	public static Image blackChosenBallImg = new Image(
-			Main.class.getResourceAsStream("round_album_black_48dp.png"));
-	public static Image whiteChosenBallImg = new Image(
-			Main.class.getResourceAsStream("round_album_white_48dp.png"));
-
-	public static Image getChosenBallImg(Color color) {
-		if (color == BLACK) return blackChosenBallImg;
-		else return whiteChosenBallImg;
-	}
-	
-	public enum Color {
-		BLACK, WHITE
-	};
-
+public class Ball {
 	private Color color;
+	private int x;
+	private int y;
 
-	private int posX;
-	private int posY;
-
-	public int getPosX() {
-		return posX;
-	}
-
-	public int getPosY() {
-		return posY;
-	}
-
-	public Ball(Color color, int posX, int posY) {
-		super();
+	public Ball(Color color, int x, int y) {
 		this.color = color;
-		this.posX = posX;
-		this.posY = posY;
+		this.x = x;
+		this.y = y;
+	}
 
-		if (color == BLACK)
-			this.setImage(blackBallImg);
+	private static boolean isOnBoard(int x, int y) {
+		if (y == 0 || y == 10 || x + y < 7 || x + y > 23 || x - y > 14 || x - y < -3) {
+			return false;
+		}
 		else
-			this.setImage(whiteBallImg);
+			return true;
+	}
 
+	public boolean move(int dx, int dy) {
+		x += dx;
+		y += dy;
+		if (isOnBoard(x, y))
+			return true;
+		else
+			return false;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 
 	public Color getColor() {

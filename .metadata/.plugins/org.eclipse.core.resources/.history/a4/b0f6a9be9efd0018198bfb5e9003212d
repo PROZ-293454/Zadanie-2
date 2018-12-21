@@ -1,0 +1,38 @@
+package controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.BoardModel;
+import view.BoardView;
+import static view.Color.*;
+
+public class Controller {
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+	
+	BoardView boardView;
+	BoardModel boardModel;
+
+	@FXML
+	public void initialize() {
+		boardModel = new BoardModel();
+		boardView = new BoardView(board);
+		for (ImageView ball : boardView.setBoard(BLACK))
+			ball.setOnMouseClicked(e -> ballClicked(ball));
+	}
+
+	private void ballClicked(ImageView ball) {
+		int[] ballPos = boardView.getBallPos(ball);
+		System.out.println(ballPos);
+	}
+	
+	
+
+
+}

@@ -1,0 +1,115 @@
+package controller;
+
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import model.BoardModel;
+import model.Messaging;
+import model.Step;
+import view.BoardView;
+import view.ImageMove;
+
+import static model.State.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static model.BoardModel.MY_COLOR;
+
+public class Controller {
+	@FXML
+	private GridPane board;
+	@FXML
+	private Text myCounterText;
+	@FXML
+	private Text opponentCounterText;
+
+	BoardView boardView;
+	BoardModel boardModel;
+	
+
+	@FXML
+	public void initialize() {
+		boardModel = new BoardModel();
+		boardView = new BoardView(board);
+		for (ImageView ball : boardView.setBoard(MY_COLOR))
+			ball.setOnMouseClicked(e -> ballClicked(ball));
+	}
+
+	private void ballClicked(ImageView ball) {
+		int[] ballPos = boardView.getBallPos(ball);
+		int x = ballPos[0];
+		int y = ballPos[1];
+		System.out.println(boardModel.getState());
+
+		if (boardModel.getState() == CHOOSE_FIRST_BALL) {
+			boardView.setChosen(x, y);
+			boardModel.chooseFirstBall(x, y);
+			System.out.println(boardModel.getState());
+		} else if (boardModel.getState() == CHOOSE_SECOND_BALL) {
+			Step lineStep = boardModel.chooseBallLine(x, y);
+			if (lineStep != null) {
+
+				int myLineLength = boardModel.getLineLength();
+				int[] firstBallPos = boardModel.getBallPos(0);
+				int[] lastBallPos = boardModel.getBallPos(myLineLength - 1);
+
+				boardView.setChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), myLineLength);
+
+				List<Step> listOfMoves = boardModel.createListOfMoves();
+				for (Step move : listOfMoves) {
+					ImageView moveButton = boardView.addMoveButton(lastBallPos[0], lastBallPos[1],
+							new ImageMove(move.dx(), move.dy()));
+					moveButton.setOnMouseClicked(e -> moveButtonClicked(move, lineStep));
+				}
+			}
+		}
+
+	}
+
+	private void moveButtonClicked(Step move, Step lineStep) {
+
+		int[] firstBallPos = boardModel.getBallPos(0);
+		int x1 = firstBallPos[0];
+		int y1 = firstBallPos[1];
+		int lineLength = boardModel.getLineLength();
+
+		boardView.moveLineOfBalls(x1, y1, lineStep.dx(), lineStep.dy(), lineLength,
+				new ImageMove(move.dx(), move.dy()));
+
+		String msg = boardModel.moveBallLine(move);
+		if (msg != null)
+			makeAlert(msg);
+		setPoints();
+		boardView.deleteAllMoveButtons();
+	}
+	
+	private void saveBoardToString() {
+		Messaging.makeMsgString(move)
+	}
+
+	private void makeAlert(String text) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Koniec gry!");
+			alert.setHeaderText(text);
+			alert.setContentText("Zakoñcz grê");
+			Optional<ButtonType> result = alert.showAndWait();
+			result.ifPresent(res -> {
+			});
+		});
+	}
+
+	private void setPoints() {
+		myCounterText.setText(Integer.toString(boardModel.getMyCounter()));
+		opponentCounterText.setText(Integer.toString(boardModel.getOpponentCounter()));
+
+	}
+
+}
