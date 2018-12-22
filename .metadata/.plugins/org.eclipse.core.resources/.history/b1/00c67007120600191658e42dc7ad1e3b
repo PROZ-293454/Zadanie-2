@@ -61,8 +61,8 @@ public class BoardView {
 			return null;
 	}
 
-	public ImageView setIsChosen(int x, int y, boolean isChosen) {
-		board[x][y].setImage(getBallImage(board[x][y], isChosen));
+	public ImageView setChosen(int x, int y) {
+		board[x][y].setImage(getBallImage(board[x][y], true));
 		return board[x][y];
 	}
 
@@ -71,7 +71,7 @@ public class BoardView {
 		for (int i = 1; i < numberOfBalls; i++) {
 			int x = x1 + dx * i;
 			int y = y1 + dy * i;
-			chosenLine.add(setIsChosen(x, y, true));
+			chosenLine.add(setChosen(x, y));
 		}
 		return chosenLine;
 	}
@@ -113,6 +113,12 @@ public class BoardView {
 		board[x][y] = null;
 		return ball;
 	}
+
+	/*
+	 * private ImageView moveBall(int x, int y, int dx, int dy) throws
+	 * ArrayIndexOutOfBoundsException { ImageView ball = deleteBall(x, y); addBall(x
+	 * + dx, y + dy, ball); return ball; }
+	 */
 
 	public ImageView addMoveButton(int x, int y, ImageMove move) {
 		int dx = move.getDx();
@@ -246,14 +252,6 @@ public class BoardView {
 			return blackBallList;
 		else
 			return whiteBallList;
-	}
-
-	public void setNotChosenLine(int x1, int y1, int dx, int dy, int numberOfBalls) {
-		for (int i = 0; i < numberOfBalls; i++) {
-			int x = x1 + dx * i;
-			int y = y1 + dy * i;
-			setIsChosen(x, y, false);
-		}
 	}
 
 }

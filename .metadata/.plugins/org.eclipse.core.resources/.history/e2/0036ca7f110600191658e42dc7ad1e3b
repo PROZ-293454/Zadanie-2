@@ -45,14 +45,12 @@ public class Controller {
 	private void ballClicked(ImageView ball) {
 		if (boardModel.getState() == GAME_ENDED)
 			return;
-		if (ballPos == null)
-			return;
 		int[] ballPos = boardView.getBallPos(ball);
 		int x = ballPos[0];
 		int y = ballPos[1];
 
 		if (boardModel.getState() == CHOOSE_FIRST_BALL) {
-			boardView.setIsChosen(x, y, true);
+			boardView.setChosen(x, y);
 			boardModel.chooseFirstBall(x, y);
 		} else if (boardModel.getState() == CHOOSE_SECOND_BALL) {
 			Step lineStep = boardModel.chooseBallLine(x, y);
@@ -65,17 +63,11 @@ public class Controller {
 				boardView.setChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), myLineLength);
 
 				List<Step> listOfMoves = boardModel.createListOfMoves();
-				if (listOfMoves.size() == 0) {
-					boardModel.endTurn();
-					boardView.setNotChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), myLineLength);
-					boardModel.startTurn();
-					Alerts.makeTurnAlert(MY_COLOR);
-				}
 				for (Step move : listOfMoves) {
-						ImageView moveButton = boardView.addMoveButton(lastBallPos[0], lastBallPos[1],
-								new ImageMove(move.dx(), move.dy()));
-						moveButton.setOnMouseClicked(e -> moveButtonClicked(move, lineStep));
-					}
+					ImageView moveButton = boardView.addMoveButton(lastBallPos[0], lastBallPos[1],
+							new ImageMove(move.dx(), move.dy()));
+					moveButton.setOnMouseClicked(e -> moveButtonClicked(move, lineStep));
+				}
 			}
 		}
 

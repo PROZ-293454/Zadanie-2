@@ -45,8 +45,6 @@ public class Controller {
 	private void ballClicked(ImageView ball) {
 		if (boardModel.getState() == GAME_ENDED)
 			return;
-		if (ballPos == null)
-			return;
 		int[] ballPos = boardView.getBallPos(ball);
 		int x = ballPos[0];
 		int y = ballPos[1];
@@ -69,7 +67,6 @@ public class Controller {
 					boardModel.endTurn();
 					boardView.setNotChosenLine(firstBallPos[0], firstBallPos[1], lineStep.dx(), lineStep.dy(), myLineLength);
 					boardModel.startTurn();
-					Alerts.makeTurnAlert(MY_COLOR);
 				}
 				for (Step move : listOfMoves) {
 						ImageView moveButton = boardView.addMoveButton(lastBallPos[0], lastBallPos[1],

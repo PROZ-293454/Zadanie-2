@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="ballClick" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="ballclick"/>
+			<item value="black"/>
+			<item value="startturn"/>
+			<item value="endturn"/>
+			<item value="endtunr"/>
+			<item value="setchosenline"/>
+			<item value="createListOfMoves"/>
+			<item value="possiblem"/>
+			<item value="possible"/>
+			<item value="msg "/>
+			<item value="string msg"/>
 			<item value="system.out"/>
 			<item value="endgame"/>
 			<item value="alerts."/>
 			<item value="end"/>
-			<item value="endga"/>
-			<item value="myCounter"/>
-			<item value="turn"/>
-			<item value="whi"/>
-			<item value="who"/>
-			<item value="white"/>
-			<item value="black"/>
-			<item value="endturn"/>
-			<item value="endtu"/>
-			<item value="endg"/>
-			<item value="sendboard"/>
 		</list>
 		<list key="replacehistory">
 			<item value="Step"/>
